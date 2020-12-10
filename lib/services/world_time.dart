@@ -12,7 +12,7 @@ class WorldTime {
     try {
       // Make request
       Response response =
-          await get('http://worldtimeapi.org/api/timezones/$url');
+          await get('http://worldtimeapi.org/api/timezone/$url');
       Map data = jsonDecode(response.body);
       // print(data);
 
