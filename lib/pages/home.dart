@@ -9,14 +9,15 @@ class _HomeState extends State<Home> {
   Map data = {};
   @override
   Widget build(BuildContext context) {
-    data = ModalRoute.of(context).settings.arguments;
-
-    print('data====>>  $data');
+    data = data.isNotEmpty ? data : ModalRoute.of(context).settings.arguments;
 
     // set backgound
 
     String bgImage = data['isDaytime'] ? 'day.png' : 'night.png';
     Color bgcolor = data['isDaytime'] ? Colors.blue : Colors.indigo;
+    String image = data['flag'];
+
+    print('image =========> $image');
     return Scaffold(
       backgroundColor: bgcolor,
       body: SafeArea(
@@ -29,17 +30,34 @@ class _HomeState extends State<Home> {
           child: Column(
             children: <Widget>[
               FlatButton.icon(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/location');
+                onPressed: () async {
+                  dynamic result =
+                      await Navigator.pushNamed(context, '/location');
+                  setState(() {
+                    data = {
+                      'location': result['location'],
+                      'time': result['time'],
+                      'flag': result['flag'],
+                      'isDaytime': result['isDaytime'],
+                    };
+                  });
                 },
                 icon: Icon(
                   Icons.edit_location,
                   color: Colors.grey[300],
                 ),
                 label: Text(
-                  'edit location',
-                  style: TextStyle(color: Colors.grey[300]),
+                  'Click to Edit location',
+                  style: TextStyle(color: Colors.grey[1000], fontSize: 20),
                 ),
+              ),
+              SizedBox(
+                height: 20.0,
+              ),
+              CircleAvatar(
+                radius: 60.0,
+                backgroundImage: AssetImage('assets/$image'),
+                backgroundColor: Colors.transparent,
               ),
               SizedBox(
                 height: 20.0,
@@ -66,11 +84,11 @@ class _HomeState extends State<Home> {
                   fontSize: 66.0,
                   color: Colors.white,
                 ),
-              )
+              ),
             ],
           ),
         ),
       )),
     );
   }
-} 
+}
